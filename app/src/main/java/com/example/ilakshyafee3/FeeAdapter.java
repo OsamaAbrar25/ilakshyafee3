@@ -1,5 +1,6 @@
 package com.example.ilakshyafee3;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +16,14 @@ import java.util.List;
 
 public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder> {
     private List<FeeInfo> list;
-    private boolean ch[];
-    private ArrayList<Integer> arrayList;
+    private ArrayList<CheckBox> checkboxPosArrayList = new ArrayList<>();
+    ArrayList<FeeInfo> arrayList = new ArrayList<>();
+    private Context context;
 
 
-    public FeeAdapter(List<FeeInfo> list) {
+    public FeeAdapter(List<FeeInfo> list, Context context) {
         this.list = list;
+        this.context = context;
     }
 
     @NonNull
@@ -33,46 +36,63 @@ public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull FeeHolder holder, int position) {
-        holder.textView_fee.setText(Integer.toString(list.get(position).getFeeAmount()));
-        holder.textView_due.setText(Integer.toString(list.get(position).getDueAmount()));
-        holder.checkBox.setText(list.get(position).getInstallmentName());
+        int fee = list.get(position).getFeeAmount();
+        int due = list.get(position).getDueAmount();
+        String installmentName = list.get(position).getInstallmentName();
+        holder.textView_fee.setText(Integer.toString(fee));
+        holder.textView_due.setText(Integer.toString(due));
+        holder.checkBox.setText(installmentName);
+
 
         holder.checkBox.setTag(Integer.toString(position));
-        //arrayList.add(holder.checkBox);
-        if (holder.checkBox.isChecked()) {
-            arrayList.add((Integer) holder.checkBox.getTag(position));
+
+
+        checkboxPosArrayList.add(holder.checkBox);
+
+        if (position > 0) {
+            holder.checkBox.setEnabled(false);
         }
-        /*if (position > 0) {
-            FeeInfo feeInfo = list.get(position-1);
-            if (feeInfo.getDueAmount() > 0) {
-                if (holder.checkBox.isSelected()) {
-                    holder.checkBox.setEnabled(true);
-                }
-                else {
-                    holder.checkBox.setEnabled(false);
-                }
-            }
-            else {
-                holder.checkBox.setEnabled(true);
-            }
-        }*/
+        else {
+            holder.checkBox.setEnabled(true);
+        }
+
+
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                FeeInfo feeInfo = new FeeInfo(installmentName, fee, due);
+                if (buttonView.isChecked()) {
+                    //
 
+
+                        /*FeeInfo feeInfo1 = list.get(position-1);
+                        if (feeInfo1.getDueAmount() > 0) {*/
+                    FeeInfo feeInfo1 = list.get(position);
+                        if (position < checkboxPosArrayList.size()-1 && feeInfo1.getDueAmount() > 0) {
+                                checkboxPosArrayList.get(position + 1).setEnabled(true);
+                        }
+
+                    if (list != null) {
+                        arrayList.add(feeInfo);
+                    }
+                    buttonView.setChecked(true);
+                }
+                else {
+                    if (position < checkboxPosArrayList.size()-1) {
+                        int i;
+                        for (i=position+1;i<checkboxPosArrayList.size();i++) {
+                            checkboxPosArrayList.get(i).setChecked(false);
+                            checkboxPosArrayList.get(i).setEnabled(false);
+                        }
+                    }
+
+                    if (list != null) {
+                    arrayList.remove(feeInfo);
+                    }
+                    buttonView.setChecked(false);
+                }
             }
         });
-
-        /*ch = new boolean[list.size()];
-        //ch[position]=false;
-        if (list.get(position).getDueAmount() != 0 && !holder.checkBox.isChecked() && position<list.size()-1) {
-            ch[position+1] = false;
-
-            //holder.checkBox
-        }
-        holder.checkBox.setEnabled(ch[position]);
-        //if (holder.checkBox.isChecked()) {}
-        */
 
     }
 
@@ -91,5 +111,9 @@ public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder> {
             checkBox = itemView.findViewById(R.id.checkBox);
 
         }
+    }
+
+    public ArrayList<FeeInfo> getCheckedData() {
+        return arrayList;
     }
 }

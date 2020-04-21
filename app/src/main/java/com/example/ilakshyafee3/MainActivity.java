@@ -4,9 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -19,11 +25,16 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private FeeAdapter feeAdapter;
+    private Button button;
+    ArrayList<FeeInfo> arrayList;
+    ArrayList<String> installmentList;
+    ArrayList<Integer> dueList, feeList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recyclerView = findViewById(R.id.recyclerView2);
+        button = findViewById(R.id.button);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplication());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -39,8 +50,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<FeeInfo>> call, Response<List<FeeInfo>> response) {
                 Log.e("json", response.toString());
-                feeAdapter = new FeeAdapter(response.body());
+                feeAdapter = new FeeAdapter(response.body(), MainActivity.this);
+                feeAdapter.notifyDataSetChanged();
                 recyclerView.setAdapter(feeAdapter);
+                arrayList = feeAdapter.getCheckedData();
+
+                Toast.makeText(MainActivity.this, ""+arrayList, Toast.LENGTH_SHORT).show();
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                       // Toast.makeText(MainActivity.this, ""+arrayList.get(0).getDueAmount(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, FeeConfirmationActivity.class);
+                intent.putParcelableArrayListExtra("arrayList", arrayList);
+                startActivity(intent);
+                    }
+                });
             }
 
             @Override
@@ -48,5 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 }
