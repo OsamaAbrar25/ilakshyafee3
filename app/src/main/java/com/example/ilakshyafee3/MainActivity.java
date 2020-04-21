@@ -27,8 +27,6 @@ public class MainActivity extends AppCompatActivity {
     private FeeAdapter feeAdapter;
     private Button button;
     ArrayList<FeeInfo> arrayList;
-    ArrayList<String> installmentList;
-    ArrayList<Integer> dueList, feeList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,10 +57,14 @@ public class MainActivity extends AppCompatActivity {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                       // Toast.makeText(MainActivity.this, ""+arrayList.get(0).getDueAmount(), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, FeeConfirmationActivity.class);
-                intent.putParcelableArrayListExtra("arrayList", arrayList);
-                startActivity(intent);
+                        if (arrayList.size()!=0) {
+                            Intent intent = new Intent(MainActivity.this, FeeConfirmationActivity.class);
+                            intent.putParcelableArrayListExtra("arrayList", arrayList);
+                            startActivity(intent);
+                        }
+                        else {
+                            Toast.makeText(MainActivity.this, "Please select atleast one", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
             }

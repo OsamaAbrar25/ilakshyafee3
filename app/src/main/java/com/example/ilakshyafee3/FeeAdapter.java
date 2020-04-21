@@ -38,6 +38,8 @@ public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder> {
     public void onBindViewHolder(@NonNull FeeHolder holder, int position) {
         int fee = list.get(position).getFeeAmount();
         int due = list.get(position).getDueAmount();
+        String studentCode = list.get(position).getStudentCode();
+        String schoolCode = list.get(position).getSchoolCode();
         String installmentName = list.get(position).getInstallmentName();
         holder.textView_fee.setText(Integer.toString(fee));
         holder.textView_due.setText(Integer.toString(due));
@@ -60,13 +62,9 @@ public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder> {
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                FeeInfo feeInfo = new FeeInfo(installmentName, fee, due);
+                FeeInfo feeInfo = new FeeInfo(installmentName, fee, due, studentCode, schoolCode);
                 if (buttonView.isChecked()) {
-                    //
 
-
-                        /*FeeInfo feeInfo1 = list.get(position-1);
-                        if (feeInfo1.getDueAmount() > 0) {*/
                     FeeInfo feeInfo1 = list.get(position);
                         if (position < checkboxPosArrayList.size()-1 && feeInfo1.getDueAmount() > 0) {
                                 checkboxPosArrayList.get(position + 1).setEnabled(true);
@@ -78,6 +76,7 @@ public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder> {
                     buttonView.setChecked(true);
                 }
                 else {
+
                     if (position < checkboxPosArrayList.size()-1) {
                         int i;
                         for (i=position+1;i<checkboxPosArrayList.size();i++) {
@@ -87,7 +86,7 @@ public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder> {
                     }
 
                     if (list != null) {
-                    arrayList.remove(feeInfo);
+                    arrayList.remove(position);
                     }
                     buttonView.setChecked(false);
                 }
