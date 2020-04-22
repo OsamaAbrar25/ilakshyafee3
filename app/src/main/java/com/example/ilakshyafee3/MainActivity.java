@@ -1,10 +1,14 @@
 package com.example.ilakshyafee3;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -27,9 +31,16 @@ public class MainActivity extends AppCompatActivity {
     private FeeAdapter feeAdapter;
     private Button button;
     ArrayList<FeeInfo> arrayList;
+    private static int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 102);
+        }
         setContentView(R.layout.activity_main);
         recyclerView = findViewById(R.id.recyclerView2);
         button = findViewById(R.id.button);
@@ -37,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplication());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://ilakshyatest.herokuapp.com/")

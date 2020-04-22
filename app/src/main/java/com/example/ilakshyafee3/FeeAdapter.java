@@ -66,7 +66,7 @@ public class FeeAdapter extends RecyclerView.Adapter<FeeAdapter.FeeHolder> {
                 if (buttonView.isChecked()) {
 
                     FeeInfo feeInfo1 = list.get(position);
-                        if (position < checkboxPosArrayList.size()-1 && feeInfo1.getDueAmount() > 0) {
+                        if (position < checkboxPosArrayList.size()-1) {
                                 checkboxPosArrayList.get(position + 1).setEnabled(true);
                         }
 

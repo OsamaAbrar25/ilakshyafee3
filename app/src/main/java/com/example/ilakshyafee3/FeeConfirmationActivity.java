@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +18,8 @@ public class FeeConfirmationActivity extends AppCompatActivity {
     ConfirmationAdapter confirmationAdapter;
     TextView textView_net, textView_net_amt, textView_scode, textView_name, textView_head;
     ImageView imageView;
+    Button button_paynow;
+    ArrayList<FeeInfo> arrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +33,12 @@ public class FeeConfirmationActivity extends AppCompatActivity {
         textView_name = findViewById(R.id.textView_name);
         recyclerView = findViewById(R.id.recyclerView2);
         imageView = findViewById(R.id.imageView);
+        button_paynow = findViewById(R.id.button_paynow);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplication());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        ArrayList<FeeInfo> arrayList = new ArrayList<>();
+
         arrayList = getIntent().getParcelableArrayListExtra("arrayList");
         if (arrayList != null) {
             confirmationAdapter = new ConfirmationAdapter(arrayList);
@@ -47,6 +53,17 @@ public class FeeConfirmationActivity extends AppCompatActivity {
             textView_name.setText(arrayList.get(0).getStudentCode());
             textView_scode.setText(arrayList.get(0).getSchoolCode());
         }
+
+        button_paynow.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FeeConfirmationActivity.this, ReceiptActivity.class);
+                intent.putParcelableArrayListExtra("arrayList", arrayList);
+                startActivity(intent);
+                finish();
+            }
+        });
 
     }
 }
